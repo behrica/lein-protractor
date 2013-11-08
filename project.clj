@@ -10,8 +10,6 @@
                   [ring-server/ring-server "0.3.1"]
                  ]
   :eval-in-leiningen true
-  ;:plugins [[lein-protractor "0.1.0-SNAPSHOT"]]
-  :ring {:handler leiningen.protractor/app }
 )
 
 
