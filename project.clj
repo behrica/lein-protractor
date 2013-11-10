@@ -1,6 +1,6 @@
 (defproject lein-protractor "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Leiningen Protractor plugin"
+  :url "https://github.com/behrica/lein-protractor"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
@@ -10,6 +10,7 @@
                   [ring-server/ring-server "0.3.1"]
                  ]
   :eval-in-leiningen true
+  :plugins [[lein-release "1.0.5"]]
 )
 
 
