@@ -1,4 +1,4 @@
-(defproject lein-protractor "0.1.0-SNAPSHOT"
+(defproject lein-protractor "0.1.0"
   :description "Leiningen Protractor plugin"
   :url "https://github.com/behrica/lein-protractor"
   :license {:name "Eclipse Public License"
