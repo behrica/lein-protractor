@@ -11,6 +11,7 @@
                  ]
   :eval-in-leiningen true
   :plugins [[lein-release "1.0.5"]]
+  :lein-release {:deploy-via :lein-install}
 )
 
 
