@@ -11,7 +11,7 @@
                   ;
                  ]
   :eval-in-leiningen true
-  :plugins [[lein-release "1.0.5"][lein-midje "3.1.1"]]
+  :plugins [[lein-release "1.1.3"][lein-midje "3.1.2"][lein-ancient "0.5.3"]]
   :lein-release {:deploy-via :lein-install}
 
   :profiles {:dev { :dependencies [[midje "1.5.1"][leiningen "2.3.3"]]}}
