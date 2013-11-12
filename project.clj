@@ -8,10 +8,15 @@
                  [lein-ring "0.8.8"]
                  [ring "1.2.1"]
                   [ring-server/ring-server "0.3.1"]
+                  ;
                  ]
   :eval-in-leiningen true
-  :plugins [[lein-release "1.0.5"]]
+  :plugins [[lein-release "1.0.5"][lein-midje "3.1.1"]]
   :lein-release {:deploy-via :lein-install}
+
+  :profiles {:dev { :dependencies [[midje "1.5.1"][leiningen "2.3.3"]]}}
+
+  :aliases {"build" ["do" "clean," "install," "midje"]}
 )
 
 
