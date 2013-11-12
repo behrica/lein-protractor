@@ -6,7 +6,8 @@
   (:import org.openqa.selenium.server.SeleniumServer))
 
 
-(defn- sh-protractor [protractor]
+
+(defn sh-protractor [protractor]
   (let [ret (sh "protractor" (:protractorconfig protractor))]
      (println (:out ret))
      (println (:err ret))
@@ -17,15 +18,25 @@
 (defn wait-a-bit []
   (Thread/sleep 20000))
 
+(defn- keys-present? [m keys]
+  (get-in m keys)
+)
+
+
+(defn start-ring [project protractor]
+  (server-task project {:join? false :port 8080 :open-browser? false :init (:init protractor)})
+  )
+
 (defn protractor
   "Starts/stop/runs selenium server, ring server, protractor"
   [project & args]
-  ;{ :pre (not (nil? (:protractor project)))}
+  {:pre [(keys-present?  project [:protractor :chromedriver])]}
+
   (let [protractor (:protractor project)]
     (System/setProperty "webdriver.chrome.driver" (:chromedriver protractor))
     (let [selenium-server (org.openqa.selenium.server.SeleniumServer.)]
       (.start selenium-server)
-      (future (server-task project {:join? false :port 8080 :open-browser? false :init (:init protractor)}))
+      (future (start-ring project protractor))
       (wait-a-bit)
       (sh-protractor protractor)
       (.stop selenium-server))))
