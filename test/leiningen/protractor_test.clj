@@ -60,11 +60,15 @@
   (protractor {}) => (throws AssertionError)
   (protractor {:protractor {}}) => (throws AssertionError))
 
+
+; fails ...   see https://github.com/marick/Midje/issues/251
+
 ;(fact "passing a port uses it"
 ;  (protractor project) => nil
 ;  (provided
 ;    (start-ring project protractor-config) => nil
 ;    (abort "Protractor failed")  => nil :times 0
+;    (wait-a-bit) => ""
 ;    (sh-protractor protractor-config) => nil
-;    (wait-a-bit) => nil
-;  ))
+; ))
+
