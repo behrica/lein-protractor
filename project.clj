@@ -14,8 +14,7 @@
   :plugins [[lein-release "1.1.3"][lein-midje "3.1.2"][lein-ancient "0.5.3"]]
   :lein-release {:deploy-via :lein-install}
 
-  :profiles {:dev { :dependencies [[midje "1.5.1"][leiningen "2.3.3"]]}}
-
+  :profiles {:dev { :dependencies [[midje "1.6-beta1"][leiningen "2.3.3"]] }}
   :aliases {"build" ["do" "clean," "install," "midje"]}
 )
 

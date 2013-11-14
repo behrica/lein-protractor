@@ -15,16 +15,15 @@
          (abort "Protractor failed")))
 )
 
-(defn wait-a-bit []
-  (Thread/sleep 20000))
+(defn wait-a-bit [ms]
+  (Thread/sleep ms))
 
 (defn- keys-present? [m keys]
   (get-in m keys)
 )
 
-
-(defn start-ring [project protractor-config]
-  (server-task project {:join? false :port 8080 :open-browser? false :init (:init protractor-config)})
+(defn start-ring [project protractor-config port]
+  (server-task project {:join? false :port port :open-browser? false :init (:init protractor-config)})
   )
 
 (defn protractor
@@ -36,7 +35,7 @@
     (System/setProperty "webdriver.chrome.driver" (:chromedriver protractor-config))
     (let [selenium-server (org.openqa.selenium.server.SeleniumServer.)]
       (.start selenium-server)
-      (future (start-ring project protractor-config))
-      (wait-a-bit)
+      (future (start-ring project protractor-config 8080 ))
+      (wait-a-bit (or (:wait protractor-config) 20000))
       (sh-protractor protractor-config)
       (.stop selenium-server))))
