@@ -45,30 +45,42 @@
 (fact "when shell out to protactor call fails, abort() is called"
     (protractor project) => nil
     (provided
+      (new-selenium-server) => "aServer"
+      (start-selenium "aServer")  => nil
       (abort "Protractor failed")  => nil
       (sh "protractor" "a.js") => {}
-      (wait-a-bit 4000) => nil))
+      (wait-a-bit 4000) => nil
+      (stop-selenium "aServer") => nil
+))
 
 (fact "when shell out to protactor call works, abort() is not called"
   (protractor project) => nil
   (provided
-    (start-ring project protractor-config 8080) => nil
+    (new-selenium-server) => "aServer"
+    (start-selenium "aServer")  => nil
+    (start-ring-with-future project protractor-config 8080) => nil
     (abort "Protractor failed")  => nil :times 0
     (sh "protractor" "a.js") => {:exit 0}
-    (wait-a-bit 4000) => nil))
+    (wait-a-bit 4000) => nil
+    (stop-selenium "aServer") => nil))
+
 
 (fact "when no :wait specified, 20000 is used"
   (let [project-without-wait           (assoc-in project [:protractor :wait] nil)
         protractor-config-without-wait (assoc-in protractor-config [:wait] nil )]
   (protractor project-without-wait) => nil
   (provided
-    (start-ring project-without-wait protractor-config-without-wait 8080) => nil
+    (new-selenium-server) => "aServer"
+    (start-selenium "aServer")  => nil
+    (start-ring-with-future project-without-wait protractor-config-without-wait 8080) => nil
     (abort "Protractor failed")  => nil :times 0
     (sh "protractor" "a.js") => {:exit 0}
-    (wait-a-bit 20000) => nil))) 
+    (wait-a-bit 20000) => nil
+    (stop-selenium "aServer") => nil))) 
+
+
+
   
-
-
 (fact "throws when called with misisng data"
   (protractor {}) => (throws AssertionError)
   (protractor {:protractor {}}) => (throws AssertionError))
@@ -78,9 +90,11 @@
 (fact "passing a port uses it"
   (protractor project) => nil
   (provided
-    (start-ring project protractor-config 8080) => nil
+    (new-selenium-server) => "aServer"
+    (start-selenium "aServer")  => nil
+    (start-ring-with-future project protractor-config 8080) => nil
     (abort "Protractor failed")  => nil :times 0
     (wait-a-bit 4000) => ""
     (sh-protractor protractor-config) => nil
- ))
+    (stop-selenium "aServer") => nil))
 
