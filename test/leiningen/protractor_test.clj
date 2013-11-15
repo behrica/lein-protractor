@@ -5,23 +5,6 @@
                [clojure.java.shell :refer [sh]]
                [leiningen.ring.server :refer [server-task]]))
 
-(defn deep-merge-with
-  "Like merge-with, but merges maps recursively, applying the given fn
-  only when there's a non-map at a particular level.
-
-  (deepmerge + {:a {:b {:c 1 :d {:x 1 :y 2}} :e 3} :f 4}
-               {:a {:b {:c 2 :d {:z 9} :z 3} :e 100}})
-  -> {:a {:b {:z 3, :c 3, :d {:z 9, :x 1, :y 2}}, :e 103}, :f 4}"
-  [f & maps]
-  (apply
-    (fn m [& maps]
-      (if (every? map? maps)
-        (apply merge-with m maps)
-        (apply f maps)))
-    maps))
-
-
-
 
 (defn noop-handler [request]
   {:status 200
@@ -34,7 +17,7 @@
 (def protractor-config
   {:init noop
    :chromedriver "chromedriver"
-   :protractorconfig "a.js"
+   :config "a.js"
    :wait 4000 
    }
   )
@@ -58,7 +41,7 @@
   (provided
     (new-selenium-server) => "aServer"
     (start-selenium "aServer")  => nil
-    (start-ring-with-future project protractor-config 8080) => nil
+    (start-ring-with-future project noop 8080) => nil
     (abort "Protractor failed")  => nil :times 0
     (sh "protractor" "a.js") => {:exit 0}
     (wait-a-bit 4000) => nil
@@ -72,7 +55,7 @@
   (provided
     (new-selenium-server) => "aServer"
     (start-selenium "aServer")  => nil
-    (start-ring-with-future project-without-wait protractor-config-without-wait 8080) => nil
+    (start-ring-with-future project-without-wait noop 8080) => nil
     (abort "Protractor failed")  => nil :times 0
     (sh "protractor" "a.js") => {:exit 0}
     (wait-a-bit 20000) => nil
@@ -86,15 +69,15 @@
   (protractor {:protractor {}}) => (throws AssertionError))
 
 
-
 (fact "passing a port uses it"
-  (protractor project) => nil
-  (provided
-    (new-selenium-server) => "aServer"
-    (start-selenium "aServer")  => nil
-    (start-ring-with-future project protractor-config 8080) => nil
-    (abort "Protractor failed")  => nil :times 0
-    (wait-a-bit 4000) => ""
-    (sh-protractor protractor-config) => nil
-    (stop-selenium "aServer") => nil))
+  (let [project-with-port (assoc-in project [:ring :port] 2000)]
+    (protractor project-with-port) => nil
+    (provided   
+      (new-selenium-server) => "aServer"
+      (start-selenium "aServer")  => nil
+      (start-ring-with-future project-with-port noop 2000) => nil
+      (abort "Protractor failed")  => nil :times 0
+      (wait-a-bit 4000) => ""
+      (sh-protractor protractor-config) => nil
+      (stop-selenium "aServer") => nil)))
 
