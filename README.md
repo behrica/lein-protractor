@@ -20,10 +20,16 @@ Put `[lein-protractor "0.1.0-SNAPSHOT"]` into the `:plugins` vector of your proj
 
 It can be configured by this keys in project.clj:
 
-    :ring {:handler todo.web/app}       ; handler function, which will be started by ring server
-    :protractor {:init todo.db/init-db  ; function to be executed by ring plugin when ring server starts
+    :ring {
+         :handler todo.web/app  ; handler function, which will be started by ring server
+         :port 8080             ; port to start ring server on 
+     }       
+    :protractor {
+         :init todo.db/init-db  ; function to be executed by ring plugin when ring server starts
          :chromedriver "/home/xxxxx/bin/chromedriver"
-         :protractorconfig "resources/protractor_conf.js" }
+         :config "resources/protractor_conf.js"
+         :wait Time to wait in ms, before starting protractor. This should be the expected time itg takes to start the ring server and run the init method 
+    }
 
 
 ## License

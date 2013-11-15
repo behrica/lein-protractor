@@ -8,7 +8,7 @@
 
 
 (defn sh-protractor [protractor-config]
-  (let [ret (sh "protractor" (:protractorconfig protractor-config))]
+  (let [ret (sh "protractor" (:config protractor-config))]
      (println (:out ret))
      (println (:err ret))
      (if (not (= 0 (:exit ret)))
@@ -22,9 +22,8 @@
   (get-in m keys)
 )
 
-(defn start-ring-with-future [project protractor-config port]
-  (future (server-task project {:join? false :port port :open-browser? false :init (:init protractor-config)}))
-  )
+(defn start-ring-with-future [project init  port]
+  (future (server-task project {:join? false :port port :open-browser? false :init init} )))
 
 (defn new-selenium-server []
   (org.openqa.selenium.server.SeleniumServer.)
@@ -48,7 +47,10 @@
     (System/setProperty "webdriver.chrome.driver" (:chromedriver protractor-config))
     (let [selenium-server (new-selenium-server)]
       (start-selenium selenium-server)
-      (start-ring-with-future project protractor-config 8080 )
+      (start-ring-with-future 
+                              project 
+                              (:init protractor-config) 
+                              (or (-> project :ring :port) 8080))
       (wait-a-bit (or (:wait protractor-config) 20000))
       (sh-protractor protractor-config)
       (stop-selenium selenium-server))))
